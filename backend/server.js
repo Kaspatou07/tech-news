@@ -304,7 +304,6 @@ app.post('/quill-upload', authenticateToken, quillUpload.single('file'), (req, r
   res.status(201).json({ location: imageUrl });
 });
 
-// Supprimer un article (réservé aux administrateurs)
 app.delete('/articles/:id', authenticateToken, requireAdmin, (req, res) => {
   const id = req.params.id; 
   fs.readFile(ARTICLES_FILE, (err, data) => {
@@ -312,30 +311,48 @@ app.delete('/articles/:id', authenticateToken, requireAdmin, (req, res) => {
     let articles = JSON.parse(data);
     const index = articles.findIndex(a => a.id === id);
     if (index === -1) return res.status(404).json({ error: 'Article non trouvé' });
+    
     const articleToDelete = articles[index];
     articles.splice(index, 1);
+    
     fs.writeFile(ARTICLES_FILE, JSON.stringify(articles, null, 2), (err) => {
       if (err) return res.status(500).json({ error: 'Erreur lors de la suppression de l\'article' });
-      if (articleToDelete.image) {
-        const parts = articleToDelete.image.split('/uploads/');
+      
+      // Fonction pour supprimer un fichier d'un dossier donné à partir d'une URL
+      const deleteImageFromFolder = (url, folder) => {
+        const parts = url.split(`/${folder}/`);
         if (parts.length === 2) {
           const filename = parts[1];
-          const filepath = path.join(process.cwd(), 'uploads', filename);
+          const filepath = path.join(process.cwd(), folder, filename);
           fs.unlink(filepath, (unlinkErr) => {
             if (unlinkErr) {
-              console.error('Erreur lors de la suppression de l\'image', unlinkErr);
+              console.error(`Erreur lors de la suppression de l'image dans ${folder}:`, unlinkErr);
             }
-            res.json({ message: 'Article et image supprimés avec succès' });
           });
-        } else {
-          res.json({ message: 'Article supprimé (aucune image à supprimer)' });
         }
-      } else {
-        res.json({ message: 'Article supprimé avec succès' });
+      };
+
+      // Supprimer l'image principale (dans uploads) si présente
+      if (articleToDelete.image && articleToDelete.image.includes('/uploads/')) {
+        deleteImageFromFolder(articleToDelete.image, 'uploads');
       }
+      
+      // Supprimer les images intégrées dans le contenu (dans quill-uploads)
+      if (articleToDelete.content) {
+        // Expression régulière pour trouver les URL des images dans quill-uploads
+        const regex = /<img[^>]+src="([^">]+\/quill-uploads\/[^">]+)"/g;
+        let match;
+        while ((match = regex.exec(articleToDelete.content)) !== null) {
+          const imageUrl = match[1];
+          deleteImageFromFolder(imageUrl, 'quill-uploads');
+        }
+      }
+      
+      res.json({ message: 'Article et images supprimés avec succès' });
     });
   });
 });
+
 
 // Endpoint de mise à jour partielle d'un article (réservé aux administrateurs)
 app.patch('/articles/:id', authenticateToken, requireAdmin, upload.single('imageFile'), (req, res) => {

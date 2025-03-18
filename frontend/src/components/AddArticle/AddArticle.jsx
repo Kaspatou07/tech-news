@@ -8,7 +8,7 @@ import './AddArticle.css';
 
 const AddArticle = () => {
   const [title, setTitle] = useState('');
-  const [content, setContent] = useState(''); // Contenu HTML généré par Quill
+  const [content, setContent] = useState('');
   const [category, setCategory] = useState('');
   const [imageFile, setImageFile] = useState(null);
   const [previewUrl, setPreviewUrl] = useState(null);
@@ -85,7 +85,7 @@ const AddArticle = () => {
           const items = clipboardData.items;
           for (let i = 0; i < items.length; i++) {
             if (items[i].type.indexOf("image") !== -1) {
-              e.preventDefault(); // Empêcher l'insertion automatique
+              e.preventDefault();
               const file = items[i].getAsFile();
               if (file) {
                 const formData = new FormData();
@@ -104,7 +104,7 @@ const AddArticle = () => {
                   console.error("Erreur d'upload d'image collée : ", err);
                 }
               }
-              break; // On traite uniquement la première image
+              break;
             }
           }
         }
