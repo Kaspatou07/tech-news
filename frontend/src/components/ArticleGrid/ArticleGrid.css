@@ -1,0 +1,151 @@
+/* --- ArticleGrid --- */
+.article-grid {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+}
+
+.grid-view .article-card {
+    width: 220px;
+    margin: 10px;
+}
+
+/* --- Mode liste --- */
+.list-view {
+    flex-direction: column;
+    align-items: center;
+}
+
+.list-view .article-card {
+    width: 70%;
+    max-width: 800px;
+    display: flex;
+    align-items: stretch;
+    padding: 10px;
+    margin: 10px 0;
+    background: linear-gradient(to right, #000, #333);
+    border-radius: 8px;
+}
+
+.list-view .article-image {
+    width: 200px;
+    height: 120px;
+    object-fit: cover;
+    border-radius: 4px;
+    margin-right: 15px;
+    flex-shrink: 0;
+}
+
+.list-view .content {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+
+.list-view .article-card h3 {
+    font-size: 1em;
+    margin-bottom: 10px;
+}
+
+.list-view .article-date {
+    font-size: 0.8em;
+}
+
+/* --- Bouton switch --- */
+.button-container {
+    display: flex;
+    justify-content: flex-end;
+    margin-bottom: 10px;
+}
+
+.toggle-btn {
+    padding: 8px;
+    background-color: #007BFF;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+}
+
+.toggle-btn:hover {
+    background-color: #0056b3;
+}
+
+/* --- Bouton Afficher plus --- */
+.afficher-plus-btn {
+    display: block;
+    margin: 20px auto;
+    padding: 10px 20px;
+    font-size: 1em;
+    background-color: #007BFF;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+.afficher-plus-btn:hover {
+    background-color: #0056b3;
+}
+
+/* --- Boutons de filtre dans le Header --- */
+.dropdown-menu button {
+    background: #fff;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    margin: 4px 2px;
+    padding: 6px 10px;
+    font-size: 0.9em;
+    cursor: pointer;
+    transition: background 0.3s, border 0.3s;
+}
+
+.dropdown-menu button:hover {
+    background: #f0f0f0;
+}
+
+/* Bouton actif : bordure plus épaisse et couleur de fond associée */
+.active-filter {
+    border: 2px solid;
+    font-weight: bold;
+}
+
+/* Bouton "Toutes" */
+.default-filter {
+    background: #ddd;
+    color: #333;
+    border-color: #bbb;
+}
+
+/* Couleurs spécifiques aux catégories */
+.category-informatique {
+    background: #007BFF;
+    border-color: #007BFF;
+    color: #fff;
+}
+
+.category-mobile {
+    background: #28a745;
+    border-color: #28a745;
+    color: #fff;
+}
+
+.category-innovation {
+    background: #ffc107;
+    border-color: #ffc107;
+    color: #000;
+}
+
+.category-gadgets {
+    background: #dc3545;
+    border-color: #dc3545;
+    color: #fff;
+}
+
+.category-jeux {
+    background: #6f42c1;
+    border-color: #6f42c1;
+    color: #fff;
+}

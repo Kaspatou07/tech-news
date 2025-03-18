@@ -1,0 +1,156 @@
+openapi: 3.0.0
+info:
+  title: API Tech-News
+  description: Documentation API pour l'application Tech-News
+  version: 1.0.0
+servers:
+  - url: http://localhost:5000
+paths:
+  /auth/register:
+    post:
+      summary: Inscription d'un nouvel utilisateur
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                email:
+                  type: string
+                username:
+                  type: string
+                password:
+                  type: string
+      responses:
+        '201':
+          description: Utilisateur créé
+  /auth/login:
+    post:
+      summary: Connexion d'un utilisateur
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                email:
+                  type: string
+                password:
+                  type: string
+      responses:
+        '200':
+          description: Token JWT renvoyé
+  /profile:
+    get:
+      summary: Obtenir le profil utilisateur
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: Profil utilisateur renvoyé
+  /auth/update-password:
+    patch:
+      summary: Mise à jour du mot de passe
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                newPassword:
+                  type: string
+      responses:
+        '200':
+          description: Mot de passe mis à jour
+  /articles:
+    get:
+      summary: Liste de tous les articles
+      responses:
+        '200':
+          description: Liste renvoyée
+    post:
+      summary: Ajouter un nouvel article (admin uniquement)
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                title:
+                  type: string
+                content:
+                  type: string
+                imageFile:
+                  type: string
+                  format: binary
+      responses:
+        '201':
+          description: Article créé
+  /articles/{id}:
+    get:
+      summary: Obtenir un article par ID
+      parameters:
+        - in: path
+          name: id
+          schema:
+            type: integer
+          required: true
+      responses:
+        '200':
+          description: Article renvoyé
+        '404':
+          description: Article non trouvé
+    delete:
+      summary: Supprimer un article par ID (admin uniquement)
+      security:
+        - bearerAuth: []
+      parameters:
+        - in: path
+          name: id
+          schema:
+            type: integer
+          required: true
+      responses:
+        '200':
+          description: Article supprimé
+    patch:
+      summary: Modifier partiellement un article (admin uniquement)
+      security:
+        - bearerAuth: []
+      parameters:
+        - in: path
+          name: id
+          schema:
+            type: integer
+          required: true
+      requestBody:
+        required: false
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                title:
+                  type: string
+                content:
+                  type: string
+                imageFile:
+                  type: string
+                  format: binary
+      responses:
+        '200':
+          description: Article mis à jour
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT

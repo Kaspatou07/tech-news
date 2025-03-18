@@ -1,0 +1,210 @@
+.header {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    z-index: 1000;
+    background-color: #333;
+    color: #fff;
+    padding: 15px 20px;
+}
+
+.header-wrapper {
+    max-width: 1200px;
+    width: 100%;
+    margin: 0 auto;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.header-left {
+    flex: 0 0 auto;
+}
+
+.header-logo {
+    max-height: 50px;
+}
+
+.header-middle {
+    flex: 1;
+    display: flex;
+    justify-content: center;
+}
+
+.nav-menu {
+    list-style: none;
+    display: flex;
+    gap: 30px;
+    margin: 0;
+    padding: 0;
+}
+
+.nav-item {
+    position: relative;
+    padding-bottom: 5px;
+}
+
+.nav-item::after {
+    content: "";
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: -5px;
+    height: 5px;
+}
+
+.nav-item>a,
+.nav-item>span {
+    color: #fff;
+    text-decoration: none;
+    font-weight: 500;
+    cursor: pointer;
+}
+
+.nav-item>a:hover,
+.nav-item>span:hover {
+    text-decoration: underline;
+    text-decoration-color: #0095e5;
+    text-decoration-thickness: 2px;
+    text-underline-offset: 3px;
+}
+
+/* Sous-menu déroulant pour "Actualités" */
+.dropdown-menu {
+    display: none;
+    position: absolute;
+    top: 100%;
+    left: 0;
+    transform: translateY(5px);
+    background-color: #444;
+    list-style: none;
+    padding: 10px 0;
+    margin: 0;
+    min-width: 150px;
+    z-index: 999;
+}
+
+.dropdown-menu li {
+    padding: 5px 15px;
+}
+
+.dropdown-menu li a {
+    color: #fff;
+    text-decoration: none;
+}
+
+.dropdown-menu li a:hover {
+    background-color: #555;
+}
+
+/* Affichage du sous-menu lors du survol */
+.nav-item:hover .dropdown-menu {
+    display: block;
+}
+
+.header-right {
+    flex: 0 0 auto;
+    display: flex;
+    align-items: center;
+    gap: 15px;
+}
+
+.dark-mode-btn {
+    background: none;
+    border: none;
+    color: #e3cd02;
+    cursor: pointer;
+    font-size: 1.2em;
+}
+
+.dark-mode-btn:hover {
+    color: #fff491;
+}
+
+.header-link {
+    color: #fff;
+    text-decoration: none;
+}
+
+.header-link:hover {
+    text-decoration: underline;
+}
+
+.logout-btn {
+    background: none;
+    border: none;
+    color: #fff;
+    cursor: pointer;
+    font-size: 1em;
+}
+
+.logout-btn:hover {
+    text-decoration: underline;
+}
+
+/* Bouton "Se connecter" */
+.login-btn {
+    background-color: #006aff;
+    color: #fff;
+    border: none;
+    padding: 8px 15px;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 1em;
+    text-decoration: none;
+    transition: background-color 0.3s ease;
+}
+
+.login-btn:hover {
+    background-color: #0095e5;
+}
+
+
+/* Style général pour les boutons de filtre dans le sous-menu Actualités */
+.dropdown-menu button {
+    background: #fff;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    margin: 4px 2px;
+    padding: 6px 10px;
+    font-size: 0.9em;
+    cursor: pointer;
+    transition: background 0.3s, border 0.3s;
+}
+
+/* Règle de hover pour tous les boutons */
+.dropdown-menu button:hover {
+    background: #f0f0f0;
+}
+
+/* Boutons actifs pour chaque catégorie */
+.dropdown-menu button.active-filter.category-informatique {
+    background: #007BFF;
+    border: 2px solid #007BFF;
+    color: #fff;
+}
+
+.dropdown-menu button.active-filter.category-mobile {
+    background: #28a745;
+    border: 2px solid #28a745;
+    color: #fff;
+}
+
+.dropdown-menu button.active-filter.category-innovation {
+    background: #ffc107;
+    border: 2px solid #ffc107;
+    color: #000;
+}
+
+.dropdown-menu button.active-filter.category-gadgets {
+    background: #dc3545;
+    border: 2px solid #dc3545;
+    color: #fff;
+}
+
+.dropdown-menu button.active-filter.category-jeux {
+    background: #6f42c1;
+    border: 2px solid #6f42c1;
+    color: #fff;
+}

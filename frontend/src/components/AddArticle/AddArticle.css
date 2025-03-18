@@ -1,0 +1,62 @@
+/* ============================
+   Formulaire d'ajout d'article
+   ============================ */
+.add-article {
+    margin-bottom: 40px;
+}
+
+.form-group {
+    margin-bottom: 15px;
+}
+
+.form-group label {
+    display: block;
+    margin-bottom: 5px;
+    color: #fff;
+}
+
+.form-group input[type="text"],
+.form-group textarea,
+.search-bar input {
+    width: 98%;
+    padding: 8px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    color: black;
+    background-color: #fff;
+}
+
+.form-group input {
+    width: 98%;
+    color: black;
+    background-color: #fff;
+}
+
+button[type="submit"],
+.articles-submit button {
+    padding: 8px 12px;
+    background-color: #28a745;
+    border: none;
+    color: #fff;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+button[type="submit"]:hover,
+.articles-submit button:hover {
+    background-color: #218838;
+}
+
+
+.image-preview-container {
+    text-align: center;
+    margin-top: 10px;
+}
+
+.image-preview {
+    width: 200px;
+    height: 200px;
+    object-fit: cover;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+}

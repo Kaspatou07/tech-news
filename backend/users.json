@@ -1,0 +1,37 @@
+[
+  {
+    "id": 1,
+    "email": "tony@stark.com",
+    "username": "poiu",
+    "password": "$2b$10$I.ku9GyWwJu0Kb8LIx/R/emFbKG9.kfJsPrTdxp7SIldG4CP9SWvO",
+    "role": "user"
+  },
+  {
+    "id": 2,
+    "email": "kawap07@gmail.com",
+    "username": "azerty",
+    "password": "$2b$10$vho.zb03D8hnfJf6YYcPMuMrWR3AnqPdEu4oqgZi24QEOwnF6qExS",
+    "role": "admin"
+  },
+  {
+    "id": 3,
+    "email": "aqfqsdfg@gmail.com",
+    "username": "qgsdfg",
+    "password": "$2b$10$6WRLvxX69onoJVRerfBDTeCnJ4YB0qSDSFo8B0pz658gyfo2/kwmq",
+    "role": "user"
+  },
+  {
+    "id": 4,
+    "email": "azerty@gmail.com",
+    "username": "qwerty",
+    "password": "$2b$10$Bj8mtYVojZGHbESjkGRKbu5xGRzhNq/jN22F4ns42NtoGlJ0uO4Py",
+    "role": "user"
+  },
+  {
+    "id": 5,
+    "email": "kaspa5604@gmail.com",
+    "username": "Kaspa",
+    "password": "$2b$10$Wr.bEkpvdaoecRLRHSaBwO5lY7LNGh29..M2IVG/6YaMweDt8qcI6",
+    "role": "user"
+  }
+]

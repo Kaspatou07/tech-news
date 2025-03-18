@@ -1,0 +1,39 @@
+.page404-container {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    min-height: 80vh;
+    text-align: center;
+    background-color: #333;
+    color: #f5f5f5;
+    padding: 20px;
+}
+
+.page404-container h1 {
+    font-size: 4rem;
+    margin-bottom: 0.5rem;
+}
+
+.page404-container h2 {
+    font-size: 2rem;
+    margin-bottom: 1rem;
+}
+
+.page404-container p {
+    font-size: 1.2rem;
+    margin-bottom: 1.5rem;
+}
+
+.home-link {
+    padding: 10px 20px;
+    background-color: #007BFF;
+    color: #fff;
+    text-decoration: none;
+    border-radius: 5px;
+    transition: background-color 0.3s ease;
+}
+
+.home-link:hover {
+    background-color: #0056b3;
+}
