@@ -1,10 +1,9 @@
-import React, { useState, useRef, useEffect } from 'react';
+import React, { useState, useRef, useEffect, useCallback } from 'react';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 import Quill from 'quill';
 import 'quill/dist/quill.snow.css';
 import './AddArticle.css';
-
 
 const AddArticle = () => {
   const [title, setTitle] = useState('');
@@ -13,15 +12,13 @@ const AddArticle = () => {
   const [imageFile, setImageFile] = useState(null);
   const [previewUrl, setPreviewUrl] = useState(null);
   const [message, setMessage] = useState('');
-  const [fileInputKey, setFileInputKey] = useState(Date.now());
   const token = localStorage.getItem('token');
   const navigate = useNavigate();
 
   const editorRef = useRef(null);
   const quillRef = useRef(null);
 
-  // Gestionnaire personnalisé pour uploader une image via le bouton de la toolbar
-  const imageHandler = () => {
+  const imageHandler = useCallback(() => {
     const input = document.createElement('input');
     input.setAttribute('type', 'file');
     input.setAttribute('accept', 'image/*');
@@ -46,7 +43,7 @@ const AddArticle = () => {
         }
       }
     };
-  };
+  }, [token]);
 
   useEffect(() => {
     if (editorRef.current && !quillRef.current) {
@@ -70,7 +67,7 @@ const AddArticle = () => {
               ['clean']
             ],
             handlers: {
-              image: imageHandler, // Utilise notre gestionnaire personnalisé
+              image: imageHandler,
             },
           },
         },
@@ -110,12 +107,13 @@ const AddArticle = () => {
         }
       });
 
+      // Enregistrer le Delta sous forme de JSON
       quillRef.current.on('text-change', () => {
-        const html = editorRef.current.querySelector('.ql-editor').innerHTML;
-        setContent(html);
+        const delta = quillRef.current.getContents();
+        setContent(JSON.stringify(delta));
       });
     }
-  }, [token]);
+  }, [token, imageHandler]);
 
   const handleFileChange = (e) => {
     const file = e.target.files[0];
@@ -185,7 +183,6 @@ const AddArticle = () => {
         <div className="form-group">
           <label>Image :</label>
           <input
-            key={fileInputKey}
             type="file"
             onChange={handleFileChange}
             accept="image/*"

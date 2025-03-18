@@ -142,3 +142,18 @@
 .back-button:hover {
     text-decoration: underline;
 }
+
+
+
+/* CSS pour l'alignement de l'éditeur */
+.detail-content .ql-align-right {
+    text-align: right !important;
+}
+
+.detail-content .ql-align-center {
+    text-align: center !important;
+}
+
+.detail-content .ql-align-left {
+    text-align: left !important;
+}

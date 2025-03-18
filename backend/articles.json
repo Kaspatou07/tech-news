@@ -86,5 +86,13 @@
     "content": "<h1 class=\"ql-align-center\">WELCOOOOOOME</h1><p class=\"ql-align-center\"><br></p><p class=\"ql-align-center\"><img src=\"http://localhost:5000/quill-uploads/1742336017086-cute-bear.gif\"></p><p class=\"ql-align-center\"><br></p><p><img src=\"http://localhost:5000/quill-uploads/1742336026732-7156a5c4b743084347035f7c9bb63b64a46a39ae_full.jpg\"></p><p><br></p><p class=\"ql-align-right\">fsgsyu</p><p class=\"ql-align-right\"><br></p><p class=\"ql-align-right\"><img src=\"http://localhost:5000/quill-uploads/1742336096884-7156a5c4b743084347035f7c9bb63b64a46a39ae_full.jpg\"></p>",
     "category": "Jeux",
     "createdAt": "2025-03-18T22:15:08.768Z"
+  },
+  {
+    "id": "44697a25",
+    "title": "DER des DER",
+    "image": "http://localhost:5000/uploads/1742339872858-FG1k9fVXsAAnMg-.jpg",
+    "content": "{\"ops\":[{\"insert\":\"LALALALLAAL\"},{\"attributes\":{\"align\":\"center\",\"header\":1},\"insert\":\"\\n\"},{\"attributes\":{\"align\":\"center\"},\"insert\":\"\\n\\n\"},{\"insert\":{\"image\":\"http://localhost:5000/quill-uploads/1742339825543-7156a5c4b743084347035f7c9bb63b64a46a39ae_full.jpg\"}},{\"attributes\":{\"align\":\"center\"},\"insert\":\"\\n\"},{\"insert\":{\"image\":\"http://localhost:5000/quill-uploads/1742339837664-dancing-bear-plush-bear.gif\"}},{\"insert\":\"\\n\\n\"},{\"insert\":{\"image\":\"http://localhost:5000/quill-uploads/1742339856303-GTBA-5kWYAAN9TH.jpg\"}},{\"attributes\":{\"align\":\"right\"},\"insert\":\"\\n\"}]}",
+    "category": "Mobile",
+    "createdAt": "2025-03-18T23:17:52.860Z"
   }
 ]

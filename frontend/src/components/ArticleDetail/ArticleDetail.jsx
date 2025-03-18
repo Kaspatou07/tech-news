@@ -1,11 +1,11 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import axios from 'axios';
+import { QuillDeltaToHtmlConverter } from 'quill-delta-to-html';
+import parse from 'html-react-parser';
 import './ArticleDetail.css';
 import 'quill/dist/quill.snow.css';
 
-
-// Fonction pour retourner une classe CSS en fonction de la catégorie
 const getCategoryClass = (category) => {
   if (!category) return '';
   switch (category.toLowerCase()) {
@@ -28,15 +28,36 @@ const ArticleDetail = () => {
   const { id } = useParams();
   const navigate = useNavigate();
   const [article, setArticle] = useState(null);
+  const [htmlContent, setHtmlContent] = useState('');
 
   useEffect(() => {
     axios.get(`http://localhost:5000/articles/${id}`)
-      .then(response => setArticle(response.data))
+      .then(response => {
+        setArticle(response.data);
+        if (response.data.content) {
+          let convertedHtml = "";
+          // Si le contenu commence par une balise (<), on considère qu'il s'agit déjà de HTML
+          if (response.data.content.trim().startsWith("<")) {
+            convertedHtml = response.data.content;
+          } else {
+            try {
+              // Tenter de parser le contenu comme un Delta JSON
+              const delta = JSON.parse(response.data.content);
+              const converter = new QuillDeltaToHtmlConverter(delta.ops, {});
+              convertedHtml = converter.convert();
+            } catch (error) {
+              console.error("Erreur lors de la conversion du Delta, utilisation du HTML direct :", error);
+              convertedHtml = response.data.content;
+            }
+          }
+          setHtmlContent(convertedHtml);
+        }
+      })
       .catch(error => {
         if (error.response && error.response.status === 404) {
           navigate('/404');
         } else {
-          console.error('Erreur lors de la récupération de l\'article:', error);
+          console.error("Erreur lors de la récupération de l'article :", error);
         }
       });
   }, [id, navigate]);
@@ -69,9 +90,7 @@ const ArticleDetail = () => {
         </p>
       )}
       <div className="detail-content">
-        {article.content.split('\n').map((para, idx) => (
-          <p key={idx}>{para}</p>
-        ))}
+        {htmlContent ? parse(htmlContent) : "Contenu vide"}
       </div>
     </div>
   );
