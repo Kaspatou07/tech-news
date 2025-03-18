@@ -1,6 +1,8 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import './ArticleCard.css';
+import 'quill/dist/quill.snow.css';
+
 
 const ArticleCard = ({ article, listView }) => {
   const formattedDate = new Date(article.createdAt).toLocaleDateString('fr-FR', {

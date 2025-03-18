@@ -1,11 +1,14 @@
-import React, { useState } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
+import Quill from 'quill';
+import 'quill/dist/quill.snow.css';
 import './AddArticle.css';
+
 
 const AddArticle = () => {
   const [title, setTitle] = useState('');
-  const [content, setContent] = useState('');
+  const [content, setContent] = useState(''); // Contenu HTML généré par Quill
   const [category, setCategory] = useState('');
   const [imageFile, setImageFile] = useState(null);
   const [previewUrl, setPreviewUrl] = useState(null);
@@ -13,6 +16,106 @@ const AddArticle = () => {
   const [fileInputKey, setFileInputKey] = useState(Date.now());
   const token = localStorage.getItem('token');
   const navigate = useNavigate();
+
+  const editorRef = useRef(null);
+  const quillRef = useRef(null);
+
+  // Gestionnaire personnalisé pour uploader une image via le bouton de la toolbar
+  const imageHandler = () => {
+    const input = document.createElement('input');
+    input.setAttribute('type', 'file');
+    input.setAttribute('accept', 'image/*');
+    input.click();
+    input.onchange = async () => {
+      const file = input.files[0];
+      if (file) {
+        const formData = new FormData();
+        formData.append('file', file);
+        try {
+          const response = await axios.post('http://localhost:5000/quill-upload', formData, {
+            headers: {
+              'Content-Type': 'multipart/form-data',
+              'Authorization': `Bearer ${token}`,
+            },
+          });
+          const imageUrl = response.data.location;
+          const range = quillRef.current.getSelection();
+          quillRef.current.insertEmbed(range.index, 'image', imageUrl);
+        } catch (err) {
+          console.error("Erreur d'upload d'image via toolbar : ", err);
+        }
+      }
+    };
+  };
+
+  useEffect(() => {
+    if (editorRef.current && !quillRef.current) {
+      const options = {
+        theme: 'snow',
+        placeholder: 'Composez votre texte...',
+        modules: {
+          toolbar: {
+            container: [
+              [{ 'font': [] }],
+              [{ 'header': [1, 2, 3, 4, 5, 6, false] }],
+              [{ 'size': ['small', false, 'large', 'huge'] }],
+              ['bold', 'italic', 'underline', 'strike'],
+              [{ 'color': [] }, { 'background': [] }],
+              [{ 'script': 'sub' }, { 'script': 'super' }],
+              [{ 'list': 'ordered' }, { 'list': 'bullet' }],
+              [{ 'indent': '-1' }, { 'indent': '+1' }],
+              [{ 'direction': 'rtl' }],
+              [{ 'align': [] }],
+              ['link', 'image', 'video'],
+              ['clean']
+            ],
+            handlers: {
+              image: imageHandler, // Utilise notre gestionnaire personnalisé
+            },
+          },
+        },
+      };
+
+      quillRef.current = new Quill(editorRef.current, options);
+
+      // Intercepter le collage d'images pour éviter l'insertion d'images en base64
+      quillRef.current.root.addEventListener('paste', async (e) => {
+        const clipboardData = e.clipboardData || window.clipboardData;
+        if (clipboardData && clipboardData.items) {
+          const items = clipboardData.items;
+          for (let i = 0; i < items.length; i++) {
+            if (items[i].type.indexOf("image") !== -1) {
+              e.preventDefault(); // Empêcher l'insertion automatique
+              const file = items[i].getAsFile();
+              if (file) {
+                const formData = new FormData();
+                formData.append('file', file);
+                try {
+                  const response = await axios.post('http://localhost:5000/quill-upload', formData, {
+                    headers: {
+                      'Content-Type': 'multipart/form-data',
+                      'Authorization': `Bearer ${token}`,
+                    },
+                  });
+                  const imageUrl = response.data.location;
+                  const range = quillRef.current.getSelection();
+                  quillRef.current.insertEmbed(range.index, 'image', imageUrl);
+                } catch (err) {
+                  console.error("Erreur d'upload d'image collée : ", err);
+                }
+              }
+              break; // On traite uniquement la première image
+            }
+          }
+        }
+      });
+
+      quillRef.current.on('text-change', () => {
+        const html = editorRef.current.querySelector('.ql-editor').innerHTML;
+        setContent(html);
+      });
+    }
+  }, [token]);
 
   const handleFileChange = (e) => {
     const file = e.target.files[0];
@@ -33,18 +136,16 @@ const AddArticle = () => {
     axios.post('http://localhost:5000/articles', formData, {
       headers: {
         'Content-Type': 'multipart/form-data',
-        'Authorization': `Bearer ${token}`
-      }
+        'Authorization': `Bearer ${token}`,
+      },
     })
       .then(response => {
         setMessage('Article ajouté avec succès !');
-        // Réinitialisation du formulaire
         setTitle('');
         setContent('');
         setCategory('');
         setImageFile(null);
         setPreviewUrl(null);
-        setFileInputKey(Date.now());
         navigate('/admin/manage');
       })
       .catch(error => {
@@ -68,11 +169,7 @@ const AddArticle = () => {
         </div>
         <div className="form-group">
           <label>Contenu :</label>
-          <textarea
-            value={content}
-            onChange={e => setContent(e.target.value)}
-            required
-          />
+          <div id="editor" ref={editorRef} className="quill-editor"></div>
         </div>
         <div className="form-group">
           <label>Catégorie :</label>

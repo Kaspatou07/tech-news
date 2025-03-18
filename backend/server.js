@@ -44,20 +44,31 @@ try {
   console.error('Erreur lors du chargement du fichier swagger.yml:', err);
 }
 
-// Servir les fichiers statiques du dossier uploads
+// Servir les fichiers statiques des dossiers uploads et quill-uploads
 app.use('/uploads', express.static(path.join(process.cwd(), 'uploads')));
+app.use('/quill-uploads', express.static(path.join(process.cwd(), 'quill-uploads')));
 
-// Configuration de Multer pour la gestion des fichiers
+// Configuration de Multer pour les images d'articles (dossier "uploads")
 const storage = multer.diskStorage({
   destination: (req, file, cb) => {
     cb(null, 'uploads/');
   },
   filename: (req, file, cb) => {
-    // Ajoute un timestamp pour éviter les collisions
     cb(null, Date.now() + '-' + file.originalname);
   }
 });
 const upload = multer({ storage });
+
+// Configuration de Multer pour les images insérées via Quill (dossier "quill-uploads")
+const quillStorage = multer.diskStorage({
+  destination: (req, file, cb) => {
+    cb(null, 'quill-uploads/');
+  },
+  filename: (req, file, cb) => {
+    cb(null, Date.now() + '-' + file.originalname);
+  }
+});
+const quillUpload = multer({ storage: quillStorage });
 
 // Middleware d'authentification pour vérifier le token JWT
 function authenticateToken(req, res, next) {
@@ -117,7 +128,6 @@ app.post('/auth/register', async (req, res) => {
     };
     users.push(newUser);
     writeUsers(users);
-    // Générer et renvoyer le token JWT + temps expiration
     jwt.sign(
       { id: newUser.id, email: newUser.email, username: newUser.username, role: newUser.role },
       SECRET_KEY,
@@ -142,7 +152,6 @@ app.post('/auth/login', async (req, res) => {
     return res.status(400).json({ error: 'Email requis' });
   }
   
-  // Vérifier le format de l'email
   const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
   if (!emailRegex.test(email)) {
     console.error(`Erreur de connexion: Format d'email invalide (${email}).`);
@@ -190,7 +199,6 @@ app.post('/auth/login', async (req, res) => {
       console.error(`Erreur de connexion: Mot de passe incorrect pour l'utilisateur (${user.email}).`);
       return res.status(401).json({ error: 'Mot de passe incorrect' });
     }
-    // Générer le token JWT
     jwt.sign(
       { id: user.id, email: user.email, username: user.username, role: user.role },
       SECRET_KEY,
@@ -215,6 +223,7 @@ app.get('/profile', authenticateToken, (req, res) => {
 });
 
 // === Endpoints pour les articles ===
+
 // Récupérer tous les articles
 app.get('/articles', (req, res) => {
   fs.readFile(ARTICLES_FILE, (err, data) => {
@@ -242,26 +251,18 @@ app.get('/articles/:id', (req, res) => {
 // === Endpoint de mise à jour du mot de passe (authentification requise) ===
 app.patch('/auth/update-password', authenticateToken, async (req, res) => {
   const { newPassword } = req.body;
-
-  // Vérification de la validité du mot de passe
   if (!newPassword || newPassword.length < 6) {
     return res.status(400).json({ error: 'Le mot de passe doit avoir au moins 6 caractères' });
   }
-
   try {
     const users = readUsers();
-    
-    // Trouver l'utilisateur actuel (l'utilisateur authentifié via JWT)
     const user = users.find(u => u.id === req.user.id);
     if (!user) {
       return res.status(404).json({ error: 'Utilisateur non trouvé' });
     }
-
-    // Hash du nouveau mot de passe
     const hashedPassword = await bcrypt.hash(newPassword, SALT_ROUNDS);
     user.password = hashedPassword;
     writeUsers(users);
-
     res.json({ message: 'Mot de passe mis à jour avec succès' });
   } catch (error) {
     console.error('Erreur lors de la mise à jour du mot de passe', error);
@@ -279,7 +280,7 @@ app.post('/articles', authenticateToken, requireAdmin, upload.single('imageFile'
       imageUrl = `http://localhost:${PORT}/uploads/${req.file.filename}`;
     }
     const newArticle = {
-      id: crypto.randomBytes(4).toString('hex'), // Génère un ID aléatoire de 8 caractères
+      id: crypto.randomBytes(4).toString('hex'),
       title: req.body.title,
       image: imageUrl,
       content: req.body.content,
@@ -292,6 +293,15 @@ app.post('/articles', authenticateToken, requireAdmin, upload.single('imageFile'
       res.status(201).json(newArticle);
     });
   });
+});
+
+// Endpoint pour l'upload d'images depuis Quill
+app.post('/quill-upload', authenticateToken, quillUpload.single('file'), (req, res) => {
+  if (!req.file) {
+    return res.status(400).json({ error: 'Aucun fichier fourni' });
+  }
+  const imageUrl = `http://localhost:${PORT}/quill-uploads/${req.file.filename}`;
+  res.status(201).json({ location: imageUrl });
 });
 
 // Supprimer un article (réservé aux administrateurs)
@@ -327,7 +337,7 @@ app.delete('/articles/:id', authenticateToken, requireAdmin, (req, res) => {
   });
 });
 
-// === Endpoint de mise à jour partielle d'un article (réservé aux administrateurs) ===
+// Endpoint de mise à jour partielle d'un article (réservé aux administrateurs)
 app.patch('/articles/:id', authenticateToken, requireAdmin, upload.single('imageFile'), (req, res) => {
   const id = req.params.id; 
   fs.readFile(ARTICLES_FILE, (err, data) => {
@@ -338,7 +348,6 @@ app.patch('/articles/:id', authenticateToken, requireAdmin, upload.single('image
 
     const article = articles[articleIndex];
 
-    // Si une nouvelle image est fournie, supprimer l'ancienne image
     if (req.file) {
       if (article.image) {
         const parts = article.image.split('/uploads/');
@@ -355,7 +364,6 @@ app.patch('/articles/:id', authenticateToken, requireAdmin, upload.single('image
       article.image = `http://localhost:${PORT}/uploads/${req.file.filename}`;
     }
 
-    // Mise à jour partielle des autres champs si fournis
     if (req.body.title) article.title = req.body.title;
     if (req.body.content) article.content = req.body.content;
     if (req.body.category !== undefined) article.category = req.body.category;

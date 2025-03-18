@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import axios from 'axios';
 import './ArticleDetail.css';
+import 'quill/dist/quill.snow.css';
 
 // Fonction pour retourner une classe CSS en fonction de la catégorie
 const getCategoryClass = (category) => {
@@ -66,11 +67,10 @@ const ArticleDetail = () => {
           Catégorie : {article.category}
         </p>
       )}
-      <div className="detail-content">
-        {article.content.split('\n').map((para, idx) => (
-          <p key={idx}>{para}</p>
-        ))}
-      </div>
+      <div
+        className="detail-content"
+        dangerouslySetInnerHTML={{ __html: article.content }}
+      />
     </div>
   );
 };

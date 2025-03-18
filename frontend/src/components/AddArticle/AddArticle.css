@@ -60,3 +60,36 @@ button[type="submit"]:hover,
     border: 1px solid #ccc;
     border-radius: 4px;
 }
+
+
+.quill-editor {
+    height: 300px;
+    background-color: #333;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    padding: 8px;
+    color: rgb(255, 255, 255);
+    margin-bottom: 15px;
+}
+
+/* Couleur pour le placeholder */
+.ql-editor.ql-blank::before {
+    color: #fff;
+}
+
+
+.ql-toolbar.ql-snow {
+    background-color: #787878;
+}
+
+/* Cible les éléments de texte de la toolbar */
+.ql-picker-label,
+.ql-toolbar.ql-snow {
+    color: #282525;
+}
+
+/* Forcer la couleur des icônes SVG (strokes et fills) */
+.ql-toolbar.ql-snow .ql-stroke {
+    stroke: #000000;
+    fill: #000000;
+}

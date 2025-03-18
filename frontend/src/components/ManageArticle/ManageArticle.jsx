@@ -1,7 +1,6 @@
 // ManageArticle.jsx
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-import { useNavigate } from 'react-router-dom';
 import './ManageArticle.css';
 
 const ManageArticle = () => {
@@ -12,7 +11,6 @@ const ManageArticle = () => {
   const [message, setMessage] = useState('');
   const articlesPerPage = 5;
   const token = localStorage.getItem('token');
-  const navigate = useNavigate();
 
   // États pour l'édition inline
   const [editingArticle, setEditingArticle] = useState(null);
