@@ -3,9 +3,12 @@ import { Link } from 'react-router-dom';
 import './ArticleCard.css';
 import 'quill/dist/quill.snow.css';
 
-
 const ArticleCard = ({ article, listView }) => {
-  const formattedDate = new Date(article.createdAt).toLocaleDateString('fr-FR', {
+  // Définir la date et le libellé en fonction de la présence de updatedAt
+  const articleDate = article.updatedAt ? article.updatedAt : article.createdAt;
+  const dateLabel = article.updatedAt ? 'Modifié' : 'Publié';
+
+  const formattedDate = new Date(articleDate).toLocaleDateString('fr-FR', {
     day: '2-digit',
     month: 'long',
     year: 'numeric',
@@ -47,7 +50,7 @@ const ArticleCard = ({ article, listView }) => {
           <img src={article.image} alt={article.title} className="article-image list" />
           <div className="content">
             <h3>{article.title}</h3>
-            <p className="article-date">Publié le {formattedDate}</p>
+            <p className="article-date">{dateLabel} le {formattedDate}</p>
           </div>
         </Link>
       </div>
@@ -60,7 +63,7 @@ const ArticleCard = ({ article, listView }) => {
         {categoryBadge}
         <img src={article.image} alt={article.title} className="article-image" />
         <h3>{article.title}</h3>
-        <p className="article-date">Publié le {formattedDate}</p>
+        <p className="article-date">{dateLabel} le {formattedDate}</p>
       </Link>
     </div>
   );

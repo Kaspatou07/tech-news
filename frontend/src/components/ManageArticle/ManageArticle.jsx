@@ -1,10 +1,12 @@
 // ManageArticle.jsx
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import axios from 'axios';
+import Quill from 'quill';
+import 'quill/dist/quill.snow.css';
 import './ManageArticle.css';
 
 const ManageArticle = () => {
-  // États pour la liste, recherche, pagination et messages
+  // États pour la liste, la recherche, la pagination et les messages
   const [articles, setArticles] = useState([]);
   const [searchQuery, setSearchQuery] = useState('');
   const [currentPage, setCurrentPage] = useState(1);
@@ -21,6 +23,11 @@ const ManageArticle = () => {
   const [editPreviewUrl, setEditPreviewUrl] = useState(null);
   const [editFileInputKey, setEditFileInputKey] = useState(Date.now());
 
+  // Références pour l'éditeur Quill en mode édition
+  const editEditorRef = useRef(null);
+  const editQuillRef = useRef(null);
+
+  // Récupération des articles
   useEffect(() => {
     fetchArticles();
   }, []);
@@ -47,17 +54,17 @@ const ManageArticle = () => {
 
   // --- Gestion de l'édition inline ---
 
-  // Lancement de l'édition pour un article sélectionné
+  // Démarrer l'édition pour un article sélectionné
   const startEditArticle = (article) => {
     setEditingArticle(article);
     setEditTitle(article.title);
-    setEditContent(article.content);
+    setEditContent(article.content); // Conserver le contenu original
     setEditCategory(article.category || '');
     setEditImageFile(null);
     setEditPreviewUrl(article.image || null);
+    setEditFileInputKey(Date.now());
   };
 
-  // Annulation de l'édition
   const cancelEdit = () => {
     setEditingArticle(null);
     setEditTitle('');
@@ -66,22 +73,25 @@ const ManageArticle = () => {
     setEditImageFile(null);
     setEditPreviewUrl(null);
     setEditFileInputKey(Date.now());
+    if (editQuillRef.current) {
+      editQuillRef.current = null;
+    }
   };
 
-  // Gestion du changement de fichier pour l'édition
   const handleEditFileChange = (e) => {
     const file = e.target.files[0];
     setEditImageFile(file);
     setEditPreviewUrl(file ? URL.createObjectURL(file) : null);
   };
 
-  // Soumission du formulaire d'édition
   const handleEditSubmit = (e) => {
     e.preventDefault();
     const formData = new FormData();
     formData.append('title', editTitle);
     formData.append('content', editContent);
     formData.append('category', editCategory);
+    // Ajout de la date de modification
+    formData.append('updatedAt', new Date().toISOString());
     if (editImageFile) {
       formData.append('imageFile', editImageFile);
     }
@@ -103,9 +113,59 @@ const ManageArticle = () => {
       });
   };
 
-  // --- Fin de la gestion de l'édition ---
+  // Initialisation de l'éditeur Quill pour l'édition
+  useEffect(() => {
+    if (editingArticle && editEditorRef.current) {
+      // Réinitialiser le conteneur pour éviter la duplication
+      editEditorRef.current.innerHTML = '';
 
-  // Filtrage des articles
+      const options = {
+        theme: 'snow',
+        placeholder: 'Composez votre texte...',
+        modules: {
+          toolbar: {
+            container: [
+              [{ font: [] }],
+              [{ header: [1, 2, 3, 4, 5, 6, false] }],
+              [{ size: ['small', false, 'large', 'huge'] }],
+              ['bold', 'italic', 'underline', 'strike'],
+              [{ color: [] }, { background: [] }],
+              [{ script: 'sub' }, { script: 'super' }],
+              [{ list: 'ordered' }, { list: 'bullet' }],
+              [{ indent: '-1' }, { indent: '+1' }],
+              [{ direction: 'rtl' }],
+              [{ align: [] }],
+              ['link', 'image', 'video'],
+              ['clean']
+            ]
+          },
+        },
+      };
+
+      // Création de l'instance de Quill
+      editQuillRef.current = new Quill(editEditorRef.current, options);
+
+      // Charger le contenu initial à partir de l'article édité
+      const initialContent = editingArticle.content;
+      try {
+        const delta = JSON.parse(initialContent);
+        editQuillRef.current.setContents(delta);
+      } catch (error) {
+        // Si le contenu n'est pas du JSON valide, afficher le texte brut
+        editQuillRef.current.setText(initialContent);
+      }
+
+      // Mettre à jour l'état editContent lors des modifications dans l'éditeur
+      editQuillRef.current.on('text-change', () => {
+        const delta = editQuillRef.current.getContents();
+        setEditContent(JSON.stringify(delta));
+      });
+    }
+  }, [editingArticle]); // Se déclenche uniquement lorsque l'article édité change
+
+  // --- Fin de la gestion de l'édition inline ---
+
+  // Filtrage des articles selon la recherche
   const filteredArticles = articles.filter(article => {
     const query = searchQuery.toLowerCase();
     return article.id.toString().includes(query) ||
@@ -129,7 +189,8 @@ const ManageArticle = () => {
   return (
     <div className="manage-articles">
       {message && <p className="admin-message">{message}</p>}
-      {/* Affichage du formulaire d'édition inline s'il y a un article en édition */}
+
+      {/* Formulaire d'édition inline */}
       {editingArticle && (
         <div className="edit-article">
           <h4>Modifier l'article ID {editingArticle.id}</h4>
@@ -145,11 +206,8 @@ const ManageArticle = () => {
             </div>
             <div className="form-group">
               <label>Contenu :</label>
-              <textarea 
-                value={editContent} 
-                onChange={e => setEditContent(e.target.value)} 
-                required 
-              />
+              {/* Zone d'édition Quill */}
+              <div id="edit-editor" ref={editEditorRef} className="quill-editor"></div>
             </div>
             <div className="form-group">
               <label>Catégorie :</label>
@@ -213,7 +271,15 @@ const ManageArticle = () => {
             </thead>
             <tbody>
               {currentArticles.map(article => {
-                const formattedDate = article.createdAt 
+                // Définir le libellé selon la présence de updatedAt
+                const dateLabel = article.updatedAt ? 'Modifié' : 'Publié';
+                const formattedDate = article.updatedAt
+                  ? new Date(article.updatedAt).toLocaleDateString('fr-FR', {
+                      day: '2-digit',
+                      month: 'long',
+                      year: 'numeric'
+                    })
+                  : article.createdAt
                   ? new Date(article.createdAt).toLocaleDateString('fr-FR', {
                       day: '2-digit',
                       month: 'long',
@@ -224,7 +290,7 @@ const ManageArticle = () => {
                   <tr key={article.id}>
                     <td>{article.id}</td>
                     <td>{article.title}</td>
-                    <td>{formattedDate}</td>
+                    <td>{dateLabel} le {formattedDate}</td>
                     <td className="action-cell">
                       <button className="edit-button" onClick={() => startEditArticle(article)}>
                         ✏️

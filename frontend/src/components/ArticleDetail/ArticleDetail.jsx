@@ -64,7 +64,11 @@ const ArticleDetail = () => {
 
   if (!article) return <div>Chargement...</div>;
 
-  const formattedDate = new Date(article.createdAt).toLocaleDateString('fr-FR', {
+  // Définir la date et le libellé d'affichage
+  const articleDate = article.updatedAt ? article.updatedAt : article.createdAt;
+  const dateLabel = article.updatedAt ? 'Modifié' : 'Publié';
+
+  const formattedDate = new Date(articleDate).toLocaleDateString('fr-FR', {
     day: '2-digit',
     month: 'long',
     year: 'numeric',
@@ -83,7 +87,7 @@ const ArticleDetail = () => {
       </button>
       <img src={article.image} alt={article.title} className="detail-image" />
       <h2>{article.title}</h2>
-      <p className="detail-date">Publié le {formattedDate}</p>
+      <p className="detail-date">{dateLabel} le {formattedDate}</p>
       {article.category && (
         <p className={`detail-category ${getCategoryClass(article.category)}`}>
           Catégorie : {article.category}

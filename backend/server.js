@@ -384,6 +384,8 @@ app.patch('/articles/:id', authenticateToken, requireAdmin, upload.single('image
     if (req.body.title) article.title = req.body.title;
     if (req.body.content) article.content = req.body.content;
     if (req.body.category !== undefined) article.category = req.body.category;
+    // Mise à jour du champ updatedAt avec la date actuelle
+    article.updatedAt = new Date().toISOString();
 
     articles[articleIndex] = article;
     fs.writeFile(ARTICLES_FILE, JSON.stringify(articles, null, 2), (err) => {
