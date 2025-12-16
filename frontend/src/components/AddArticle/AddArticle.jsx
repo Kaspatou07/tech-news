@@ -29,7 +29,7 @@ const AddArticle = () => {
         const formData = new FormData();
         formData.append('file', file);
         try {
-          const response = await axios.post('http://localhost:5000/quill-upload', formData, {
+          const response = await axios.post('https://tech-news-2wdt.onrender.com/quill-upload', formData, {
             headers: {
               'Content-Type': 'multipart/form-data',
               'Authorization': `Bearer ${token}`,
@@ -88,7 +88,7 @@ const AddArticle = () => {
                 const formData = new FormData();
                 formData.append('file', file);
                 try {
-                  const response = await axios.post('http://localhost:5000/quill-upload', formData, {
+                  const response = await axios.post('https://tech-news-2wdt.onrender.com/quill-upload', formData, {
                     headers: {
                       'Content-Type': 'multipart/form-data',
                       'Authorization': `Bearer ${token}`,
@@ -131,7 +131,7 @@ const AddArticle = () => {
       formData.append('imageFile', imageFile);
     }
 
-    axios.post('http://localhost:5000/articles', formData, {
+    axios.post('https://tech-news-2wdt.onrender.com/articles', formData, {
       headers: {
         'Content-Type': 'multipart/form-data',
         'Authorization': `Bearer ${token}`,
