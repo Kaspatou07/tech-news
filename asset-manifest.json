@@ -1,14 +1,14 @@
 {
   "files": {
     "main.css": "/tech-news/static/css/main.cef19217.css",
-    "main.js": "/tech-news/static/js/main.0f12dc7b.js",
+    "main.js": "/tech-news/static/js/main.fa19265a.js",
     "static/media/LogoTechNews.webp": "/tech-news/static/media/LogoTechNews.419c219de29cb4f1229d.webp",
     "index.html": "/tech-news/index.html",
     "main.cef19217.css.map": "/tech-news/static/css/main.cef19217.css.map",
-    "main.0f12dc7b.js.map": "/tech-news/static/js/main.0f12dc7b.js.map"
+    "main.fa19265a.js.map": "/tech-news/static/js/main.fa19265a.js.map"
   },
   "entrypoints": [
     "static/css/main.cef19217.css",
-    "static/js/main.0f12dc7b.js"
+    "static/js/main.fa19265a.js"
   ]
 }
