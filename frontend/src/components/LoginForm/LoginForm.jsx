@@ -12,7 +12,7 @@ const LoginForm = () => {
   const handleSubmit = (e) => {
     e.preventDefault();
     axios
-      .post('http://localhost:5000/auth/login', { email, password }) 
+      .post('https://tech-news-2wdt.onrender.com/auth/login', { email, password }) 
       .then(response => {
         localStorage.setItem('token', response.data.token);
         navigate('/profile');
