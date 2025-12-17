@@ -33,13 +33,13 @@ const ManageArticle = () => {
   }, []);
 
   const fetchArticles = () => {
-    axios.get('http://localhost:5000/articles')
+    axios.get('https://tech-news-2wdt.onrender.com/articles')
       .then(response => setArticles(response.data.reverse()))
       .catch(error => console.error('Erreur lors de la récupération des articles:', error));
   };
 
   const handleDelete = (id) => {
-    axios.delete(`http://localhost:5000/articles/${id}`, {
+    axios.delete(`https://tech-news-2wdt.onrender.com/articles/${id}`, {
       headers: { 'Authorization': `Bearer ${token}` }
     })
       .then(response => {
@@ -96,7 +96,7 @@ const ManageArticle = () => {
       formData.append('imageFile', editImageFile);
     }
 
-    axios.patch(`http://localhost:5000/articles/${editingArticle.id}`, formData, {
+    axios.patch(`https://tech-news-2wdt.onrender.com/articles/${editingArticle.id}`, formData, {
       headers: {
         'Content-Type': 'multipart/form-data',
         'Authorization': `Bearer ${token}`
