@@ -22,7 +22,7 @@ const Profile = () => {
         const decoded = jwtDecode(token);
         setRole(decoded.role);
         axios
-          .get('http://localhost:5000/profile', {
+          .get('https://tech-news-2wdt.onrender.com/profile', {
             headers: { Authorization: `Bearer ${token}` }
           })
           .then(response => {
@@ -60,7 +60,7 @@ const Profile = () => {
     const token = localStorage.getItem('token');
     axios
       .patch(
-        'http://localhost:5000/auth/update-password',  
+        'https://tech-news-2wdt.onrender.com/auth/update-password',  
         { newPassword },
         { headers: { Authorization: `Bearer ${token}` } }
       )
