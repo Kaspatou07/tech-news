@@ -31,7 +31,7 @@ const ArticleDetail = () => {
   const [htmlContent, setHtmlContent] = useState('');
 
   useEffect(() => {
-    axios.get(`http://localhost:5000/articles/${id}`)
+    axios.get(`https://tech-news-2wdt.onrender.com/articles/${id}`)
       .then(response => {
         setArticle(response.data);
         if (response.data.content) {
