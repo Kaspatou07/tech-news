@@ -18,7 +18,7 @@ const SignupForm = () => {
       return;
     }
 
-    axios.post('http://localhost:5000/auth/register', { email, username, password })
+    axios.post('https://tech-news-2wdt.onrender.com/auth/register', { email, username, password })
       .then(response => {
         localStorage.setItem('token', response.data.token);
         navigate('/profile');
