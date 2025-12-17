@@ -15,7 +15,7 @@ const ArticleGrid = ({ filterCategories = [] }) => {
   });
 
   useEffect(() => {
-    axios.get('http://localhost:5000/articles')
+    axios.get('https://tech-news-2wdt.onrender.com/articles')
       .then(response => setArticles(response.data.reverse()))
       .catch(error => console.error(error));
   }, []);
