@@ -33,13 +33,6 @@
     "username": "Kaspa",
     "password": "$2b$10$Wr.bEkpvdaoecRLRHSaBwO5lY7LNGh29..M2IVG/6YaMweDt8qcI6",
     "role": "user"
-  },
-  {
-    "id": "6",
-    "email": "admin@technews.dev",
-    "username": "admin",
-    "password": "$2b$10$CwTycUXWue0Thq9StjUM0uJ8dR9X6p9s8m7c6yF8GZK6p5VQ6s1zK",
-    "role": "admin"
   }
 
 ]
